@@ -4,30 +4,39 @@
  * @return {string}
  */
 var removeKdigits = function (num, k) {
-  if (num.length === k) {
+  if (k === 0) {
+    return num
+  }
+
+  if (num.length <= k) {
     return "0"
   }
 
-  let min = Number.parseInt(num.substring(k), 10)
+  const stack = []
+  let removed_count = 0
 
-  let window_min = min
-  let p = k
-  for (let i = k; i < num.length; i++) {
-    console.log(`i -> ${i} & p -> ${p}`)
-    window_min = num.substring(0, i - k + 1) + num.substring(p + 1)
-
-    if (Number.parseInt(window_min, 10) < min) {
-      min = Number.parseInt(window_min, 10)
+  for (let c of num) {
+    while (stack.length && c < stack[stack.length - 1] && removed_count < k) {
+      stack.pop()
+      removed_count += 1
     }
-    p++
-    console.log(window_min)
+    stack.push(c)
   }
 
-  console.log(min.toString())
-  return min.toString()
+  while (removed_count < k) {
+    stack.pop()
+    removed_count += 1
+  }
+
+  while (stack.length && stack[0] === "0") {
+    stack.shift()
+  }
+  console.log(stack.length ? stack.join("") : "0")
+  return stack.length ? stack.join("") : "0"
 }
 
 removeKdigits("5337", 2)
-// removeKdigits("1432219", 3)
-// removeKdigits("10200", 1)
-// removeKdigits("10", 2)
+removeKdigits("1432219", 3)
+removeKdigits("10200", 1)
+removeKdigits("10", 1)
+removeKdigits("1234567890", 9)
